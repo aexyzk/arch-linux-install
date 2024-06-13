@@ -59,7 +59,7 @@ wipefs -a /dev/$drive_choice
 echo "[OK] Wiped drive"
 
 # partition drive
-parted -s /dev/$drive_choice mklabel gpt mkpart ESP fat32 1MiB 513GiB set 1 boot on mkpart primary linux-swap 1GiB 9GiB mkpart primary ext4 9GiB 100%
+parted -s /dev/$drive_choice mklabel gpt mkpart ESP fat32 1MiB 513MiB set 1 boot on mkpart primary linux-swap 1GiB 9GiB mkpart primary ext4 9GiB 100% > /dev/null
 echo -e "[OK] Created partition\n"
 
 lsblk

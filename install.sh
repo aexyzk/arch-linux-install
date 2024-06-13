@@ -19,13 +19,6 @@ else
     exit
 fi
 
-# set keys
-if [[ $(loadkeys us > /dev/null) ]]; then
-    echo "[OK] Set keyboard layout"
-else
-    echo "[FAIL] Couldn't set keyboard layout"
-fi
-
 # set terimnal font
 setfont ter-132b
 echo "[OK] Set terminal font"
@@ -59,9 +52,22 @@ if [[ $drive_choice == '' ]]; then
     exit
 fi
 
-echo "'$drive_choice' selected"
+echo "'$drive_choice' selected, press enter if correct"
+read ok
 
 IFS=$old_ifs
 
 # wipe drive
+wipefs -a /dev/$drive
+echo "[OK] Wiped drive"
+
 # partition drive
+parted -s /dev/$drive mklabel gpt mkpart primary 1MiB 1GiB set 1 esp mkpart primary linux-swap 1GiB 9GiB mkpart primary ext4 9GiB 100%
+echo "[OK] Created partition"
+
+lsblk
+
+echo "Does this look right?"
+read ok
+
+# mount

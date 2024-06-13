@@ -1,1 +1,3 @@
-wget -O - https://raw.githubusercontent.com/aexyzk/arch-linux-install/<branch>/<path>/<file> | sudo bash
+```
+wget -O - https://raw.githubusercontent.com/aexyzk/arch-linux-install/blob/main/install.sh | sudo bash
+```

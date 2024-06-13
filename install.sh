@@ -3,7 +3,7 @@ clear
 echo -e "Welcome to my Arch Linux install script\n"
 
 # test internet
-if ping -q -c 2 -W 1 8.8.8.8 > /dev/null; then
+if ping -q -c 2 -W 1 1.1.1.1 > /dev/null; then
     echo "[OK] Internet Connected"
 else
     echo "[FAIL] No Vaild Internet Connection"
@@ -58,11 +58,12 @@ read ok
 IFS=$old_ifs
 
 # wipe drive
-wipefs -a /dev/$drive
+wipefs -a /dev/$drive_choice
 echo "[OK] Wiped drive"
 
 # partition drive
-parted -s /dev/$drive mklabel gpt mkpart primary 1MiB 1GiB set 1 esp mkpart primary linux-swap 1GiB 9GiB mkpart primary ext4 9GiB 100%
+#parted -s /dev/$drive_choice mklabel gpt mkpart primary 1MiB 1GiB set 1 esp mkpart primary linux-swap 1GiB 9GiB mkpart primary ext4 9GiB 100%
+parted -s /dev/$drive_choice mklabel gpt mkpart ESP fat32 1MiB 1GiB set 1 boot on mkpart primary linux-swap 1GiB 9GiB mkpart primary ext4 9GiB 100%
 echo "[OK] Created partition"
 
 lsblk

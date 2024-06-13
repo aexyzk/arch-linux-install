@@ -113,7 +113,7 @@ pacman -Sy pacman-contrib
 
 # update mirrors
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-echo "Created mirrorlist backup"
+echo -e "\nCreated mirrorlist backup"
 
 echo "Ranking mirrorlist..."
 rankmirrors -n 6 /etc/pacman.d/mirrorlist.bak > /etc/pacman.d/mirrorlist
@@ -142,25 +142,25 @@ echo " "
 # locale
 cp /etc/locale.gen /etc/locale.gen.bak
 echo "es_US.UTF-8 UTF-8" > /etc/locale.gen
-local-gen
+locale-gen
 echo LANG=en_US.UTF-8 > /etc/locale.conf
 export LANG=en_US.UTF-8
 echo -e "Edited Locale\n"
 
 # timezone
 echo "Choose a timezone"
-echo -e "\n(1) America/Los_Angeles PST\n(2) America/Denver MST\n(3) America/Chicago CST\n(4) America/New_York EST\n"
+echo -e "\n(1) America/Los_Angeles PST\n(2) America/Denver MST\n(3) America/Chicago CST\n(4) America/New_York EST"
 read timezone
 if [[ $timezone == 1 ]]; then
-    $zone="America/Los_Angles"
+    zone="America/Los_Angles"
 elif [[ $timezone == 2 ]]; then
-    $zone="America/Denver"
+    zone="America/Denver"
 elif [[ $timezone == 3 ]]; then
-    $zone="America/Chicago"
+    zone="America/Chicago"
 elif [[ $timezone == 4 ]]; then
-    $zone="America/New_York"
+    zone="America/New_York"
 else
-    $zone="America/Chicago"
+    zone="America/Chicago"
 fi
 ln -s /usr/share/zoneinfo/$zone > /etc/localtime
 echo -e "Set to $zone\n"

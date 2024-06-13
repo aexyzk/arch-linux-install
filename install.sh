@@ -20,7 +20,7 @@ else
 fi
 
 # set terimnal font
-setfont ter-132b
+#setfont ter-132b
 echo "[OK] Set terminal font"
 
 # get drive
@@ -33,7 +33,7 @@ do
     counter=$(( counter + 1 ))
     echo "($counter) $drive"
 done
-echo " "
+echo -e "*THIS WILL WIPE THE DRIVE*\n"
 
 # drive choice
 read drive_num
@@ -52,9 +52,6 @@ if [[ $drive_choice == '' ]]; then
     exit
 fi
 
-echo "'$drive_choice' selected, press enter if correct"
-read ok
-
 IFS=$old_ifs
 
 # wipe drive
@@ -62,9 +59,8 @@ wipefs -a /dev/$drive_choice
 echo "[OK] Wiped drive"
 
 # partition drive
-#parted -s /dev/$drive_choice mklabel gpt mkpart primary 1MiB 1GiB set 1 esp mkpart primary linux-swap 1GiB 9GiB mkpart primary ext4 9GiB 100%
-parted -s /dev/$drive_choice mklabel gpt mkpart ESP fat32 1MiB 1GiB set 1 boot on mkpart primary linux-swap 1GiB 9GiB mkpart primary ext4 9GiB 100%
-echo "[OK] Created partition"
+parted -s /dev/$drive_choice mklabel gpt mkpart ESP fat32 1MiB 513GiB set 1 boot on mkpart primary linux-swap 1GiB 9GiB mkpart primary ext4 9GiB 100%
+echo -e "[OK] Created partition\n"
 
 lsblk
 

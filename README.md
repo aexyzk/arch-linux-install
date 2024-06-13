@@ -1,3 +1,3 @@
 ```
-curl https://raw.githubusercontent.com/aexyzk/arch-linux-install/blob/main/install.sh | bash
+curl https://raw.githubusercontent.com/aexyzk/arch-linux-install/main/install.sh | bash
 ```

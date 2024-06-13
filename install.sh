@@ -99,7 +99,7 @@ echo -e "Enabled SWAP\n"
 
 lsblk
 
-echoe "Is everything mounted correctly? (Press enter)"
+echo "Is everything mounted correctly? (Press enter)"
 read ok
 
 # downloading contrib
@@ -129,21 +129,17 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 echo -e "\nCreated fstab using UUID\n"
 
-# chroot
-arch-chroot /mnt
-echo -e "chrooted into new system\n"
-
 # installing some programs
-echo -e "Installing some programs\n"
-pacman -S doas bash-completion neofetch hyfetch vim
+echo -e "Installing some programs on the newly installed system\n"
+arch-chroot /mnt pacman -S doas bash-completion neofetch hyfetch vim
 echo " "
 
 # locale
-cp /etc/locale.gen /etc/locale.gen.bak
-echo "es_US.UTF-8 UTF-8" > /etc/locale.gen
-locale-gen
-echo LANG=en_US.UTF-8 > /etc/locale.conf
-export LANG=en_US.UTF-8
+arch-chroot /mnt cp /etc/locale.gen /etc/locale.gen.bak
+arch-chroot /mnt echo "es_US.UTF-8 UTF-8" > /etc/locale.gen
+arch-chroot locale-gen
+arch-chroot echo LANG=en_US.UTF-8 > /etc/locale.conf
+arch-chroot export LANG=en_US.UTF-8
 echo -e "Edited Locale\n"
 
 # timezone
@@ -161,24 +157,24 @@ elif [[ $timezone == 4 ]]; then
 else
     zone="America/Chicago"
 fi
-ln -s /usr/share/zoneinfo/$zone > /etc/localtime
+arch-chroot /mnt ln -s /usr/share/zoneinfo/$zone > /etc/localtime
 echo -e "Set to $zone\n"
 
 # syncing clock
-hwclock --systohc --utc
+arch-chroot /mnt hwclock --systohc --utc
 echo -e "Synced Hardware clock\n"
 
 # hostname
 echo "Please choose a hostname"
 read hostname
-echo $hostname > /etc/hostname
+arch-chroot /mnt echo $hostname > /etc/hostname
 echo -e "System hostname set to '$hostname'\n"
 
 # ssd fstrim
 if [[ $(cat /sys/block/${drive_choice}/queue/rotational) == "1" ]]; then
     echo "fstrim not enabled (not ssd)"
 else
-    systemctl enable fstrim.timer
+    arch-chroot /mnt systemctl enable fstrim.timer
     echo "fstrim enabled"
 fi
 

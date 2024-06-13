@@ -55,7 +55,7 @@ fi
 IFS=$old_ifs
 
 # wipe drive
-wipefs -a /dev/$drive_choice
+wipefs -af /dev/$drive_choice
 echo "Wiped drive"
 
 # partition drive
@@ -82,43 +82,42 @@ root="/dev/$drive_choice${prefix}3"
 echo -e "\nBOOT: $boot\nSWAP: $swap\nROOT: $root\n"
 
 # format partitions
-mkfs.fat -F32 $boot -y
-echo "Formatted BOOT"
-
+mkfs.fat -F32 $boot
 mkswap $swap
-swapon $swap
-echo "Enabled SWAP"
-
-mkfs.ext4 $root -y
-echo "Formatted ROOT"
+mkfs.ext4 $root
 
 echo " "
 
 # mount partitions
 mount $root /mnt
 echo "Mounted ROOT"
-
 mkdir /mnt/boot
 mount $boot /mnt/boot
-echo -e "Mounted BOOT\n"
+echo "Mounted BOOT"
+swapon $swap
+echo -e "Enabled SWAP\n"
 
 lsblk
 
-echo -e "\nIs everything mounted correctly? (Press enter)"
+echoe "Is everything mounted correctly? (Press enter)"
 read ok
 
 # downloading contrib
-echo "downloading necessary packages for install"
+echo -e "\nDownloading necessary packages for install"
 pacman -Sy pacman-contrib
 
 # update mirrors
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-echo -e "\nCreated mirrorlist backup"
+echo -e "Created mirrorlist backup"
 
 echo "Ranking mirrorlist..."
 rankmirrors -n 6 /etc/pacman.d/mirrorlist.bak > /etc/pacman.d/mirrorlist
 cat /etc/pacman.d/mirrorlist
 echo " "
+
+# confirm
+echo -e "\nAre you ready for Arch Linux to be installed? (Press enter)"
+read ok
 
 # pacstrap
 echo "Downloading Arch Linux"
@@ -183,4 +182,4 @@ else
     echo "fstrim enabled"
 fi
 
-echo "welp thats it"
+

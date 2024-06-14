@@ -121,7 +121,7 @@ read ok
 
 # pacstrap
 echo "Downloading Arch Linux"
-pacstrap -K /mnt base linux linux-fireware base-devel
+pacstrap -K /mnt base linux linux-firmware base-devel
 echo " "
 
 # fstab

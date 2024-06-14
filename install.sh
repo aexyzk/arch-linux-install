@@ -125,7 +125,7 @@ pacstrap -K /mnt base linux linux-fireware base-devel
 echo " "
 
 # fstab
-genfstab -U -p /mnt >> /mnt/awrch/etc/fstab
+genfstab -U -p /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 echo -e "\nCreated fstab using UUID\n"
 

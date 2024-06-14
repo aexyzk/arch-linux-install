@@ -121,7 +121,7 @@ read ok
 
 # pacstrap
 echo "Downloading Arch Linux"
-pacstrap -K /mnt base-linux linux-fireware base-devel
+pacstrap -K /mnt base linux linux-fireware base-devel
 echo " "
 
 # fstab
@@ -129,11 +129,11 @@ genfstab -U -p /mnt >> /mnt/awrch/etc/fstab
 cat /mnt/etc/fstab
 echo -e "\nCreated fstab using UUID\n"
 
-arch-chroot /mnt /bin/bash <<EOF
+arch-chroot /mnt /bin/bash -x <<'EOF'
 echo -e "chroot in new system\n"
 # installing some programs
 echo -e "Installing some programs on the newly installed system\n"
-pacman -S doas bash-completion neofetch hyfetch vim
+pacman -S doas bash-completion neofetch hyfetch vim moreutils
 echo " "
 
 # locale
@@ -146,7 +146,7 @@ echo -e "Edited Locale\n"
 
 # timezone
 echo "Choose a timezone"
-echo -e "\n(1) America/Los_Angeles PST\n(2) America/Denver MST\n(3) America/Chicago CST\n(4) America/New_York EST"
+echo -e "\n(1) Los Angeles PST\n(2) Denver MST\n(3) Chicago CST\n(4) New York EST"
 read timezone
 if [[ $timezone == 1 ]]; then
     zone="America/Los_Angles"
@@ -179,3 +179,10 @@ else
     systemctl enable fstrim.timer
     echo "fstrim enabled"
 fi
+
+# enable mutilib
+echo -e "\nEnabled mutilib packages"
+tac /etc/pacman.conf | sed -i '0,/#Include/{s/#Include/Include/} | tac | sponge /etc/pacman.conf
+pacman -Sy
+
+EOF

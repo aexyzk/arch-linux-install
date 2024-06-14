@@ -89,11 +89,10 @@ mkfs.ext4 $root
 echo " "
 
 # mount partitions
-mkdir /mnt/awrch
-mount $root /mnt/awrch
+mount $root /mnt
 echo "Mounted ROOT"
-mkdir /mnt/awrch/boot
-mount $boot /mnt/awrch/boot
+mkdir /mnt/boot
+mount $boot /mnt/boot
 echo "Mounted BOOT"
 swapon $swap
 echo -e "Enabled SWAP\n"
@@ -122,25 +121,27 @@ read ok
 
 # pacstrap
 echo "Downloading Arch Linux"
-pacstrap -K /mnt/awrch base linux linux-fireware base-devel
+pacstrap -K /mnt base-linux linux-fireware base-devel
 echo " "
 
 # fstab
 genfstab -U -p /mnt >> /mnt/awrch/etc/fstab
-cat /mnt/awrch/etc/fstab
+cat /mnt/etc/fstab
 echo -e "\nCreated fstab using UUID\n"
 
+arch-chroot /mnt /bin/bash <<EOF
+echo -e "chroot in new system\n"
 # installing some programs
 echo -e "Installing some programs on the newly installed system\n"
-arch-chroot /mnt/awrch "pacman -S doas bash-completion neofetch hyfetch vim"
+pacman -S doas bash-completion neofetch hyfetch vim
 echo " "
 
 # locale
-arch-chroot /mnt/awrch "cp /etc/locale.gen /etc/locale.gen.bak"
-arch-chroot /mnt/awrch "echo "es_US.UTF-8 UTF-8" > /etc/locale.gen"
-arch-chroot /mnt/awrch "locale-gen"
-arch-chroot /mnt/awrch "echo LANG=en_US.UTF-8 > /etc/locale.conf"
-arch-chroot /mnt/awrch "export LANG=en_US.UTF-8"
+cp /etc/locale.gen /etc/locale.gen.bak
+echo "es_US.UTF-8 UTF-8" > /etc/locale.gen"
+locale-gen"
+echo LANG=en_US.UTF-8 > /etc/locale.conf
+export LANG=en_US.UTF-8
 echo -e "Edited Locale\n"
 
 # timezone
@@ -158,23 +159,23 @@ elif [[ $timezone == 4 ]]; then
 else
     zone="America/Chicago"
 fi
-arch-chroot /mnt/awrch "ln -s /usr/share/zoneinfo/$zone > /etc/localtime"
+ln -s /usr/share/zoneinfo/$zone > /etc/localtime
 echo -e "Set to $zone\n"
 
 # syncing clock
-arch-chroot /mnt/awrch "hwclock --systohc --utc"
+hwclock --systohc --utc
 echo -e "Synced Hardware clock\n"
 
 # hostname
 echo "Please choose a hostname"
 read hostname
-arch-chroot /mnt/awrch "echo $hostname > /etc/hostname"
+echo $hostname > /etc/hostname
 echo -e "System hostname set to '$hostname'\n"
 
 # ssd fstrim
 if [[ $(cat /sys/block/${drive_choice}/queue/rotational) == "1" ]]; then
     echo "fstrim not enabled (not ssd)"
 else
-    arch-chroot /mnt/awrch "systemctl enable fstrim.timer"
+    systemctl enable fstrim.timer
     echo "fstrim enabled"
 fi

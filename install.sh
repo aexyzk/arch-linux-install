@@ -129,8 +129,8 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 echo -e "\nCreated fstab using UUID\n"
 
-arch-chroot /mnt /bin/bash -x <<'EOF'
-echo -e "chroot in new system\n"
+arch-chroot /mnt -x <<'EOF'
+echo -e "chrooted into new system\n"
 # installing some programs
 echo -e "Installing some programs on the newly installed system\n"
 pacman -S doas bash-completion neofetch hyfetch vim moreutils

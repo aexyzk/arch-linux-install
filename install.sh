@@ -129,7 +129,7 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 echo -e "\nCreated fstab using UUID\n"
 
-arch-chroot /mnt -x <<'EOF'
+arch-chroot /mnt /bin/bash -x <<'EOF'
 echo -e "chrooted into new system\n"
 # installing some programs
 echo -e "Installing some programs on the newly installed system\n"

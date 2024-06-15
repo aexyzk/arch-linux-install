@@ -2,6 +2,8 @@
 clear
 echo -e "Welcome to my Arch Linux install script\n"
 
+echo " *** USE AT YOUR OWN RISK (ESPECIALLY IF YOU HAVE AN NVIDIA CARD) *** "
+
 # test internet
 if ping -q -c 2 -W 1 1.1.1.1 > /dev/null; then
     echo "[OK] Internet Connected"
@@ -188,9 +190,7 @@ EOF
     echo "fstrim enabled"
 fi
 
-# enable mutilib
-echo -e "\nEnabled mutilib packages"
-arch-chroot /mnt /bin/bash -x <<EOF
-tac /etc/pacman.conf | sed -i '0,/#Include/{s/#Include/Include/} | tac | sponge /etc/pacman.conf
-pacman -Sy
-EOF
+# set account info
+
+# when i make user
+#echo 'permit $uname as root' > /etc/doas.conf

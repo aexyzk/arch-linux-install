@@ -129,8 +129,7 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 cat /mnt/etc/fstab
 echo -e "\nCreated fstab using UUID\n"
 
-arch-chroot /mnt /bin/bash -x <<'EOF'
-echo -e "chrooted into new system\n"
+arch-chroot /mnt /bin/bash -x <<EOF
 # installing some programs
 echo -e "Installing some programs on the newly installed system\n"
 pacman -S doas bash-completion neofetch hyfetch vim moreutils
@@ -143,46 +142,53 @@ locale-gen"
 echo LANG=en_US.UTF-8 > /etc/locale.conf
 export LANG=en_US.UTF-8
 echo -e "Edited Locale\n"
+exit
+EOF
 
 # timezone
-echo "Choose a timezone"
+echo "Choose a timezone:"
 echo -e "\n(1) Los Angeles PST\n(2) Denver MST\n(3) Chicago CST\n(4) New York EST"
 read timezone
-if [[ $timezone == 1 ]]; then
-    zone="America/Los_Angles"
-elif [[ $timezone == 2 ]]; then
-    zone="America/Denver"
-elif [[ $timezone == 3 ]]; then
-    zone="America/Chicago"
-elif [[ $timezone == 4 ]]; then
-    zone="America/New_York"
-else
-    zone="America/Chicago"
-fi
-ln -s /usr/share/zoneinfo/$zone > /etc/localtime
+case $timezone in
+    1) zone="America/Los_Angeles" ;;
+    2) zone="America/Denver" ;;
+    3) zone="America/Chicago" ;;
+    4) zone="America/New_York" ;;
+    *) zone="America/Chicago" ;;
+esac
+
+arch-chroot /mnt /bin/bash -x <<EOF
+ln -sf /usr/share/zoneinfo/$zone /etc/localtime
 echo -e "Set to $zone\n"
 
 # syncing clock
 hwclock --systohc --utc
 echo -e "Synced Hardware clock\n"
+exit
+EOF
 
 # hostname
 echo "Please choose a hostname"
 read hostname
+
+arch-chroot /mnt /bin/bash -x <<EOF
 echo $hostname > /etc/hostname
+EOF
 echo -e "System hostname set to '$hostname'\n"
 
 # ssd fstrim
 if [[ $(cat /sys/block/${drive_choice}/queue/rotational) == "1" ]]; then
     echo "fstrim not enabled (not ssd)"
 else
+    arch-chroot /mnt /bin/bash -x <<EOF
     systemctl enable fstrim.timer
+EOF
     echo "fstrim enabled"
 fi
 
 # enable mutilib
 echo -e "\nEnabled mutilib packages"
+arch-chroot /mnt /bin/bash -x <<EOF
 tac /etc/pacman.conf | sed -i '0,/#Include/{s/#Include/Include/} | tac | sponge /etc/pacman.conf
 pacman -Sy
-
 EOF

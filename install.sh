@@ -134,7 +134,7 @@ echo -e "\nCreated fstab using UUID\n"
 arch-chroot /mnt /bin/bash -x <<EOF
 # installing some programs
 echo -e "Installing some programs on the newly installed system\n"
-pacman -S doas bash-completion neofetch hyfetch vim moreutils
+pacman -Syu --noconfirm doas bash-completion neofetch hyfetch vim moreutils
 echo " "
 
 # locale

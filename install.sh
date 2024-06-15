@@ -88,6 +88,8 @@ mkfs.ext4 $root
 
 echo " "
 
+umount -a
+
 # mount partitions
 mount $root /mnt
 echo "Mounted ROOT"

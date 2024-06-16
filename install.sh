@@ -192,5 +192,19 @@ fi
 
 # set account info
 
-# when i make user
+echo -e "\nChoose a root user password"
+read rootpasswd
+
+echo -e "\nChoose a username"
+read uname
+
+echo -e "\nChoose a password for $uname"
+read upasswd
+
+arch-chroot /mnt /bin/bash -x <<EOF
+echo -e "$rootpasswd\n$rootpasswd" | passwd
+
+useradd $uname
+echo -e "$upasswd\n$upasswd" | passwd $uname
 #echo 'permit $uname as root' > /etc/doas.conf
+EOF

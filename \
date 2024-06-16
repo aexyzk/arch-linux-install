@@ -90,7 +90,7 @@ mkfs.ext4 $root
 
 echo " "
 
-umount -R /mnt
+umount -a
 
 # mount partitions
 mount $root /mnt
@@ -237,10 +237,4 @@ arch-chroot /mnt /bin/bash -x <<EOF
 pacman -S --noconfirm dhcpcd
 systemctl enable dhcpcd@$networkdevice.service
 pacman -S --noconfirm networkmanager
-systemctl enable NetowrkManager.service
-EOF
-
-arch-chroot /mnt /bin/bash -x <<EOF
-echo neofetch >> /home/$uname/.bashrc
-umount -R /mnt
 EOF

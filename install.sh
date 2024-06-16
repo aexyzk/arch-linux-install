@@ -146,7 +146,6 @@ locale-gen"
 echo LANG=en_US.UTF-8 > /etc/locale.conf
 export LANG=en_US.UTF-8
 echo -e "Edited Locale\n"
-exit
 EOF
 
 # timezone
@@ -204,7 +203,18 @@ read upasswd
 arch-chroot /mnt /bin/bash -x <<EOF
 echo -e "$rootpasswd\n$rootpasswd" | passwd
 
-useradd $uname
+useradd -m -g users -G storage,power -s /bin/bash $uname
 echo -e "$upasswd\n$upasswd" | passwd $uname
-#echo 'permit $uname as root' > /etc/doas.conf
+echo 'permit $uname as root' > /etc/doas.conf
 EOF
+
+echo -e "\n * if you want mutilib support edit 'pacman.conf' and uncomment mutilib* \m"
+
+if [[ $(ls /sys/firmware/efi) ]]; then
+    echo "In EFI"
+else
+    echo "Not in EFI, cancling"
+    exit
+fi
+
+#28:07

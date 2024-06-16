@@ -141,7 +141,7 @@ echo " "
 
 # locale
 cp /etc/locale.gen /etc/locale.gen.bak
-echo "es_US.UTF-8 UTF-8" > /etc/locale.gen"
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen"
 locale-gen"
 echo LANG=en_US.UTF-8 > /etc/locale.conf
 export LANG=en_US.UTF-8
@@ -220,7 +220,8 @@ fi
 arch-chroot /mnt /bin/bash -x <<EOF
 bootctl install
 echo -e "title Awrch\nlinux /vmlinuz-linux\ninitrd /initramfs-linux.img" > /boot/loader/entries/awrch.conf
-echo "options root=PARTUUID=$(blkid -s PARTUUID -o value /dev/$boot) rw" >> /boot/loader/entires/awrch.conf
+echo $(blkid -s PARTUUID -o value /dev/$boot) rw"
+echo "options root=PARTUUID=$(blkid -s PARTUUID -o value /dev/$boot) rw" >> /boot/loader/entries/awrch.conf
 cat /boot/loader/entires/awrch.conf
 EOF
 
@@ -237,10 +238,8 @@ arch-chroot /mnt /bin/bash -x <<EOF
 pacman -S --noconfirm dhcpcd
 systemctl enable dhcpcd@$networkdevice.service
 pacman -S --noconfirm networkmanager
-systemctl enable NetowrkManager.service
-EOF
+systemctl enable NetworkManager.service
 
-arch-chroot /mnt /bin/bash -x <<EOF
 echo neofetch >> /home/$uname/.bashrc
-umount -R /mnt
 EOF
+umount -R /mnt
